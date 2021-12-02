@@ -87,6 +87,22 @@ this.picture = this.physics.add.sprite(167,379, 'picture').play("picture").setSc
   this.physics.add.collider(this.player, this.sidewallLayer);
   this.physics.add.collider(this.player, this.furnitureLayer);
 
+  this.physics.add.overlap(
+    this.player,
+    this.Guardleft,
+    this.GuardleftOverlap,
+    null,
+    this
+  );
+
+  this.physics.add.overlap(
+    this.player,
+    this.Guardfront,
+    this.GuardfrontOverlap,
+    null,
+    this
+  );
+
   //enable debug
    window.player = this.player;
    this.player.setCollideWorldBounds(true);

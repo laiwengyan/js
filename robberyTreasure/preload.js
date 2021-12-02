@@ -261,8 +261,8 @@ this.load.atlas('picture', 'assets/picture.png', 'assets/picture.json');
 
 
     // Add any text in the main page
-    this.add.text(50, 50, "Press spacebar to continue", {
-      font: "30px Courier",
+    this.add.text(180, 150, "Press spacebar to continue", {
+      font: "18px Courier",
       fill: "#FFFFFF",
     });
 
