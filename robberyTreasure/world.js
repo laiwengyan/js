@@ -57,7 +57,7 @@ class world extends Phaser.Scene {
   this.physics.world.bounds.width = this.grassLayer.width;
   this.physics.world.bounds.height = this.grassLayer.height;
 
-  this.player = this.physics.add.sprite(345,670,"front")
+  this.player = this.physics.add.sprite(345,670,"thief-front")
 
 
 

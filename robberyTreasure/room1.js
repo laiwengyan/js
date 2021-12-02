@@ -57,7 +57,7 @@ class room1 extends Phaser.Scene {
   this.physics.world.bounds.width = this.sidewallLayer.width;
   this.physics.world.bounds.height = this.sidewallLayer.height;
 
-  this.player = this.physics.add.sprite(438,244,"front")
+  this.player = this.physics.add.sprite(438,244,"thief-front")
   
   //enemy
   this.Guardright = this.physics.add.sprite(254,430,"Guardright").play("Guardright")

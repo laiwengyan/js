@@ -57,7 +57,7 @@ this.picture1 = this.physics.add.sprite(647,541, 'picture').play("picture").setS
   this.physics.world.bounds.width = this.floorLayer.width;
   this.physics.world.bounds.height = this.floorLayer.height;
 
-  this.player = this.physics.add.sprite(417,159,"front")
+  this.player = this.physics.add.sprite(417,159,"thief-front")
 
   //enemy
   this.Guardfront = this.physics.add.sprite(325,319,"Guardfront").play("Guardfront")

@@ -53,7 +53,7 @@ this.picture = this.physics.add.sprite(167,379, 'picture').play("picture").setSc
   this.physics.world.bounds.width = this.sidewallLayer.width;
   this.physics.world.bounds.height = this.sidewallLayer.height;
 
-  this.player = this.physics.add.sprite(428,173,"front")
+  this.player = this.physics.add.sprite(428,173,"thief-front")
 
  
  
