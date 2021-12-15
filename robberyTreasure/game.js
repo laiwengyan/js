@@ -10,10 +10,10 @@
             debug: false
         }
     },
-    // scale: {
-    //     mode: Phaser.Scale.FIT,
-    //     autoCenter: Phaser.Scale.CENTER_BOTH
-    // },
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     backgroundColor: '#000000',
     pixelArt: true,
     scene: [preload,storyline,character,gameplay,,rules,world,listroom1,room1,listroom2,room2,listroom3,room3,gameover,winscence]
