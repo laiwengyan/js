@@ -2,6 +2,8 @@ class room1 extends Phaser.Scene {
 
     constructor() {
         super({ key: 'room1' });
+        // Put global variable here
+        this.liveCount = 3;
     }
         
         // Put global variable here
@@ -14,6 +16,9 @@ class room1 extends Phaser.Scene {
     }
 
     preload() {
+
+        
+        //tilemap
         this.load.tilemapTiledJSON("room1", "assets/Room1.json");
 
          // Step 2 : Preload any images here, nickname, filename
@@ -23,13 +28,17 @@ class room1 extends Phaser.Scene {
          this.load.image("stairPng", "assets/Stair.png");
          this.load.image("tilesetsPng", "assets/tilesets.png");
          this.load.image("wallPng", "assets/Wall.png");
-         
+         this.load.audio("room","assets/room.mp3");
+         this.load.audio("collect","assets/collect.mp3");
+         this.load.audio("bang","assets/bang.mp3");
+         this.load.image("heart","assets/heart.png");
 
     }
 
     create() {
         console.log('*** room1 scene');
-        
+      
+
         let map = this.make.tilemap({ key: "room1" });
 
         let megaPixelTiles = map.addTilesetImage("MegaPixel", "megaPixelPng");
@@ -57,8 +66,29 @@ class room1 extends Phaser.Scene {
   this.physics.world.bounds.width = this.sidewallLayer.width;
   this.physics.world.bounds.height = this.sidewallLayer.height;
 
-  this.player = this.physics.add.sprite(438,244,"thief-front")
+  this.player = this.physics.add.sprite(438,244,"thief-front").setSize(12,32)
   
+  // create life
+  this.heart1 = this.add.image(50,610, 'heart').setScrollFactor(0).setVisible(false);
+  this.heart2 = this.add.image(100,610,'heart').setScrollFactor(0).setVisible(false);
+  this.heart3 = this.add.image(150,610,'heart').setScrollFactor(0).setVisible(false);
+   
+if(window.heart == 3){
+ this.heart1.setVisible(true);
+ this.heart2.setVisible(true);
+ this.heart3.setVisible(true);
+}else if (window.heart == 2){
+ this.heart1.setVisible(true);
+ this.heart2.setVisible(true);
+}else if (window.heart == 1){
+ this.heart1.setVisible(true);
+}
+
+  //score
+  var score = 0;
+  var scoreText;
+  scoreText = this.add.text(100, 100, 'treasure: 0', { fontSize: '18px', fill: '#FFFFFF' }).setScrollFactor(0);
+
   //enemy
   this.Guardright = this.physics.add.sprite(254,430,"Guardright").play("Guardright")
   // enemy tween
@@ -76,20 +106,55 @@ class room1 extends Phaser.Scene {
   this.wall2Layer.setCollisionByProperty({ window: true  })
 
 
-
   this.physics.add.collider(this.player, this.sidewallLayer);
   this.physics.add.collider(this.player, this.furniture2Layer);
   this.physics.add.collider(this.player, this.furnitureLayer);
   this.physics.add.collider(this.player, this.wall2Layer);
 
-  
 
-   
+    this.collect1Snd = this.sound.add('collect');
+    this.collect2Snd = this.sound.add('collect');
+    this.collect3Snd = this.sound.add('collect');
+
+    this.bangSnd = this.sound.add('bang');
+ 
 
 // collect item
 this.diamond = this.physics.add.sprite(479,465, 'diamond').play("diamond").setScale(1);
 this.money = this.physics.add.sprite(128,537, 'money').play("money").setScale(1);
 this.money1 = this.physics.add.sprite(521,277, 'money').play("money").setScale(1);
+
+//load collect item
+this.physics.add.overlap(this.player, this.diamond, collectItem, null, this);
+this.physics.add.overlap(this.player, this.money, collectItem2, null, this);
+this.physics.add.overlap(this.player, this.money1, collectItem3, null, this);
+
+function collectItem (player, diamond)
+{
+  this.collect1Snd.play();
+    diamond.disableBody(true, true); 
+
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem2 (player, money)
+{
+  this.collect2Snd.play();
+    money.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem3 (player, money1)
+{
+  this.collect3Snd.play();
+    money1.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+
 
 this.physics.add.overlap(
   this.player,
@@ -111,6 +176,7 @@ this.cursors = this.input.keyboard.createCursorKeys();
  this.cameras.main.startFollow(this.player);
 
 } /////////////////// end of create //////////////////////////////
+
 
 moveLeftRight() {
   console.log("moveDownUp");
@@ -155,7 +221,7 @@ moveLeftRight() {
         this.player.y > 512 &&
         this.player.y < 532
       ) {
-        this.room2();
+        this.listroom2();
       }
 
         if (this.cursors.left.isDown) {
@@ -178,16 +244,37 @@ moveLeftRight() {
             this.player.body.setVelocity(0, 0);
           }
     }
+  
 
+   
     // Function hit people
     GuardrightOverlap() {
-      console.log( "Guardright overlap player");
-      this.scene.start("gameover");
+      console.log( "Guardfront overlap player");
+    this.scene.start("gameover");
+    this.bangSnd.play();
+    console.log("deduct life")
+    this.cameras.main.shake(100);
+    this.bangSnd.play();
+    window.heart--;
+
+    if (window.heart == 2) {
+      this.heart3.setVisible(false);
+    }else if (window.heart == 1) {
+      this.heart2.setVisible(false);
+    }else if (window.heart == 0){
+      this.heart1.setVisible(false);
+    console.log("you are dead");
+    this.scene.start("gameover");
     }
-          // Function to jump to room2
-          room2(player, tile) {
-            console.log("room2 function");
-            this.scene.start("room2");
+  }
+
+    
+
+          // Function to jump to listroom2
+          listroom2(player, tile) {
+            console.log("listroom2 function");
+            this.scene.start("listroom2");
+
           }
 
           // Function to jump to world
@@ -196,8 +283,12 @@ moveLeftRight() {
                 this.scene.start("world", { player: player });
             }
 
-    }//////end of update///////
+            
 
-    
+            
+            
+
+
+    }//////end of update///////
 
 

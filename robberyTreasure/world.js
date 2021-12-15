@@ -7,7 +7,7 @@ class world extends Phaser.Scene {
   init(data) {
     this.playerPos = data.playerPos;
   }
-
+   
   preload() {
     // Step 1, load JSON
     this.load.tilemapTiledJSON("world", "assets/tiledmap.json");
@@ -18,12 +18,19 @@ class world extends Phaser.Scene {
     this.load.image("StreetPng", "assets/Street.png");
     this.load.image("housePng", "assets/House.png" );
     this.load.image("house2Png", "assets/House2.png");
+    this.load.audio("bang","assets/bang.mp3");
+    this.load.image("heart","assets/heart.png");
+    this.load.audio("room","assets/room.mp3");
     
   }
+  
+ 
+
 
   create() {
     console.log("*** world scene");
-
+    console.log("life:",window.heart);
+    
     //Step 3 - Create the map from main
     let map = this.make.tilemap({ key: "world" });
 
@@ -46,10 +53,24 @@ class world extends Phaser.Scene {
     this.treeLayer = map.createLayer("tree", tileArray, 0, 0);
 
 
-  
+  // create life
+  this.heart1 = this.add.image(50,610, 'heart').setScrollFactor(0).setVisible(false);
+  this.heart2 = this.add.image(100,610,'heart').setScrollFactor(0).setVisible(false);
+  this.heart3 = this.add.image(150,610,'heart').setScrollFactor(0).setVisible(false);
     
+if(window.heart == 3){
+  this.heart1.setVisible(true);
+  this.heart2.setVisible(true);
+  this.heart3.setVisible(true);
+}else if (window.heart == 2){
+  this.heart1.setVisible(true);
+  this.heart2.setVisible(true);
+}else if (window.heart == 1){
+  this.heart1.setVisible(true);
+}
 
-  
+
+
 
     // Add main player here with physics.add.sprite
 
@@ -57,7 +78,7 @@ class world extends Phaser.Scene {
   this.physics.world.bounds.width = this.grassLayer.width;
   this.physics.world.bounds.height = this.grassLayer.height;
 
-  this.player = this.physics.add.sprite(345,670,"thief-front")
+  this.player = this.physics.add.sprite(345,670,"thief-front").setSize(12,32)
 
 
 
@@ -68,6 +89,18 @@ class world extends Phaser.Scene {
       
 
     // Add time event / movement here
+    
+    //Audio
+    window.music = this.sound
+    .add("room", {
+    loop: true,
+    })
+    .setVolume(0.1);
+    
+    window.music.play();
+    
+    this.bangSnd = this.sound.add('bang');
+    this.bang2Snd = this.sound.add('bang');
 
     // enemy
     this.Guardleft = this.physics.add.sprite(520,202,"Guardleft").play("Guardleft")
@@ -134,6 +167,7 @@ class world extends Phaser.Scene {
 
 
   } /////////////////// end of create //////////////////////////////
+  
   moveLeftRight() {
     console.log("moveDownUp");
     this.tweens.timeline({
@@ -178,7 +212,7 @@ class world extends Phaser.Scene {
       this.player.y > 596 &&
       this.player.y < 620
     ) {
-      this.room1();
+      this.listroom1();
     }
 
     //check for Hole2
@@ -188,7 +222,7 @@ class world extends Phaser.Scene {
       this.player.y > 264 &&
       this.player.y < 284
     ) {
-      this.room1();
+      this.listroom1();
     }
 
     //check for Hole3
@@ -198,7 +232,7 @@ class world extends Phaser.Scene {
       this.player.y > 96 &&
       this.player.y < 119
     ) {
-      this.room1();
+      this.listroom1();
     }
 
     if (this.cursors.left.isDown) {
@@ -224,17 +258,48 @@ class world extends Phaser.Scene {
 
   // Function hit people
   GuardleftOverlap() {
+    console.log("deduct life")
     console.log( "Guardleft overlap player");
+    this.cameras.main.shake(100);
     this.scene.start("gameover");
+    this.bangSnd.play();
+    window.heart--;
+
+    if (window.heart == 2) {
+      this.heart3.setVisible(false);
+    }else if (window.heart == 1) {
+      this.heart2.setVisible(false);
+    }else if (window.heart == 0){
+      this.heart1.setVisible(false);
+    console.log("you are dead");
+    this.scene.start("gameover");
+    }
   }
   GuardfrontOverlap() {
     console.log( "Guardfront overlap player");
     this.scene.start("gameover");
+    this.bang2Snd.play();
+    console.log("deduct life")
+    this.cameras.main.shake(100);
+    this.bangSnd.play();
+    window.heart--;
+
+    if (window.heart == 2) {
+      this.heart3.setVisible(false);
+    }else if (window.heart == 1) {
+      this.heart2.setVisible(false);
+    }else if (window.heart == 0){
+      this.heart1.setVisible(false);
+    console.log("you are dead");
+    this.scene.start("gameover");
+    }
   }
 
+
+
   // Function to jump to room1
-  room1(player, tile) {
-    console.log("room1 function");
-    this.scene.start("room1");
+  listroom1(player, tile) {
+    console.log("listroom1 function");
+    this.scene.start("listroom1");
   }
 } //////////// end of class world ////////////////////////

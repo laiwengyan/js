@@ -19,7 +19,10 @@ class room2 extends Phaser.Scene {
          // Step 2 : Preload any images here, nickname, filename
          this.load.image("pipoPng", "assets/Pipo.png");
          this.load.image("samplessssPng", "assets/Samplessss.png");
-         
+         this.load.audio("room","assets/room.mp3");
+         this.load.audio("collect","assets/collect.mp3");
+         this.load.audio("bang","assets/bang.mp3");
+         this.load.image("heart","assets/heart.png");
 
     }
 
@@ -27,7 +30,10 @@ class room2 extends Phaser.Scene {
         console.log('*** room2 scene');
         
         let map = this.make.tilemap({ key: "room2" });
-
+        
+        var score = 0;
+        var scoreText;
+        scoreText = this.add.text(100, 100, 'treasure: 0', { fontSize: '18px', fill: '#FFFFFF' }).setScrollFactor(0);
       
      let pipoTiles = map.addTilesetImage("Pipo", "pipoPng");
      let samplesTiles = map.addTilesetImage("Samplessss", "samplessssPng");
@@ -41,6 +47,26 @@ class room2 extends Phaser.Scene {
   this.sidewallLayer = map.createLayer("sidewall", tileArray, 0, 0);
   this.sidewall2Layer = map.createLayer("sidewall2", tileArray, 0, 0);
  
+ // create life
+ this.heart1 = this.add.image(50,610, 'heart').setScrollFactor(0).setVisible(false);
+ this.heart2 = this.add.image(100,610,'heart').setScrollFactor(0).setVisible(false);
+ this.heart3 = this.add.image(150,610,'heart').setScrollFactor(0).setVisible(false);
+   
+if(window.heart == 3){
+ this.heart1.setVisible(true);
+ this.heart2.setVisible(true);
+ this.heart3.setVisible(true);
+}else if (window.heart == 2){
+ this.heart1.setVisible(true);
+ this.heart2.setVisible(true);
+}else if (window.heart == 1){
+ this.heart1.setVisible(true);
+}
+
+  //score
+  var score = 0;
+  var scoreText;
+  scoreText = this.add.text(100, 100, 'treasure: 0', { fontSize: '18px', fill: '#FFFFFF' }).setScrollFactor(0);
 
   // collect item
 this.diamond = this.physics.add.sprite(124,236, 'diamond').play("diamond").setScale(1);
@@ -53,9 +79,69 @@ this.picture = this.physics.add.sprite(167,379, 'picture').play("picture").setSc
   this.physics.world.bounds.width = this.sidewallLayer.width;
   this.physics.world.bounds.height = this.sidewallLayer.height;
 
-  this.player = this.physics.add.sprite(428,173,"thief-front")
+  //player
+  this.player = this.physics.add.sprite(428,173,"thief-front").setSize(12,32)
 
  
+   //Audio
+  
+   this.collect1Snd = this.sound.add('collect');
+   this.collect2Snd = this.sound.add('collect');
+   this.collect3Snd = this.sound.add('collect');
+   this.collect4Snd = this.sound.add('collect');
+   this.collect5Snd = this.sound.add('collect');
+
+   this.bangSnd = this.sound.add('bang');
+   this.bang2Snd = this.sound.add('bang');
+
+ //load collectitem
+ 
+this.physics.add.overlap(this.player, this.diamond, collectItem, null, this);
+this.physics.add.overlap(this.player, this.diamond1, collectItem2, null, this);
+this.physics.add.overlap(this.player, this.money, collectItem3, null, this);
+this.physics.add.overlap(this.player, this.money1, collectItem4, null, this);
+this.physics.add.overlap(this.player, this.picture, collectItem5, null, this);
+
+
+function collectItem (player, diamond)
+{
+  this.collect3Snd.play();
+    diamond.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem2 (player, diamond1)
+{
+  this.collect2Snd.play();
+    diamond1.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem3 (player, money)
+{
+  this.collect3Snd.play();
+    money.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem4 (player, money1)
+{
+  this.collect4Snd.play();
+    money1.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem5 (player, picture)
+{
+  this.collect5Snd.play();
+    picture.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
  
   //enemy
   this.Guardleft = this.physics.add.sprite(487,260,"Guardleft").play("Guardleft")
@@ -180,7 +266,7 @@ this.cursors = this.input.keyboard.createCursorKeys();
         this.player.y > 149 &&
         this.player.y < 192
       ) {
-        this.room3();
+        this.listroom3();
       }
 
         if (this.cursors.left.isDown) {
@@ -205,19 +291,49 @@ this.cursors = this.input.keyboard.createCursorKeys();
     }
 
     GuardleftOverlap() {
-      console.log( "Guardleft overlap player");
-      this.scene.start("gameover");
+      console.log( "Guardfront overlap player");
+    this.scene.start("gameover");
+    this.bang2Snd.play();
+    console.log("deduct life")
+    this.cameras.main.shake(100);
+    this.bangSnd.play();
+    window.heart--;
+
+    if (window.heart == 2) {
+      this.heart3.setVisible(false);
+    }else if (window.heart == 1) {
+      this.heart2.setVisible(false);
+    }else if (window.heart == 0){
+      this.heart1.setVisible(false);
+    console.log("you are dead");
+    this.scene.start("gameover");
     }
+  }
 
     GuardfrontOverlap() {
       console.log( "Guardfront overlap player");
       this.scene.start("gameover");
+      this.bang2Snd.play();
+      console.log("deduct life")
+      this.cameras.main.shake(100);
+      this.bangSnd.play();
+      window.heart--;
+  
+      if (window.heart == 2) {
+        this.heart3.setVisible(false);
+      }else if (window.heart == 1) {
+        this.heart2.setVisible(false);
+      }else if (window.heart == 0){
+        this.heart1.setVisible(false);
+      console.log("you are dead");
+      this.scene.start("gameover");
+      }
     }
     
           // Function to jump to room3
-          room3(player, tile) {
-            console.log("room3 function");
-            this.scene.start("room3");
+          listroom3(player, tile) {
+            console.log("listroom3 function");
+            this.scene.start("listroom3");
           }
 
           // Function to jump to room1

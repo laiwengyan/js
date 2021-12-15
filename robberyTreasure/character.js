@@ -1,6 +1,6 @@
-class gameover extends Phaser.Scene {
+class character extends Phaser.Scene {
     constructor() {
-      super("gameover");
+      super("character");
   
       // Put global variable here
     }
@@ -9,16 +9,16 @@ class gameover extends Phaser.Scene {
       // Preload all the assets here
       
       // Preload any images here
-      this.load.image('gameover', 'assets/gameOver.png');
-      
+      this.load.image('character', 'assets/character.png');
 
   
     }
   
     create() {
-      console.log("*** gameover scene");
-      this.add.image(0,0,'gameover').setOrigin(0,0);
-      console.log("gameover Scene")
+      console.log("*** character scene");
+  
+      this.add.image(0,0,'character').setOrigin(0,0);
+      console.log("character Scene")
 
   
   
@@ -26,9 +26,10 @@ class gameover extends Phaser.Scene {
       // ( 0 = mute to 1 is loudest )
       //this.music = this.sound.add('bgMusic').setVolume(0.3) // 10% volume
   
-      window.music.stop();
+      //this.music.play()
+      //window.music = this.music
 
-
+  
       // Check for spacebar or any key here
       var spaceDown = this.input.keyboard.addKey("SPACE");
   
@@ -36,13 +37,10 @@ class gameover extends Phaser.Scene {
       spaceDown.on(
         "down",
         function () {
-          console.log("Jump to world scene");
-  
-          let player = {};
-          player.x = 399;
-          player.y = 670;
+          console.log("Jump to gameplay scene");
+
       
-          this.scene.start("world", { player: player });
+          this.scene.start("gameplay");
         },
         this
       );

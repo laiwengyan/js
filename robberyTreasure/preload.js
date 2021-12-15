@@ -243,13 +243,9 @@ this.load.atlas('picture', 'assets/picture.png', 'assets/picture.json');
     spaceDown.on(
       "down",
       function () {
-        console.log("Jump to world scene");
-
-        let player = {};
-        player.x = 399;
-        player.y = 670;
+        console.log("Jump to storyline scene");
     
-        this.scene.start("world", { player: player });
+        this.scene.start("storyline");
       },
       this
     );

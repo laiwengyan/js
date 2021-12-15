@@ -15,6 +15,11 @@ class room3 extends Phaser.Scene {
     // Step 2 : Preload any images here, nickname, filename
     this.load.image("pipoPng", "assets/Pipo.png");
     this.load.image("stairPng", "assets/Stair.png");
+    this.load.audio("room","assets/room.mp3");
+    this.load.audio("collect","assets/collect.mp3");
+    this.load.audio("bang","assets/bang.mp3");
+    this.load.image("heart","assets/heart.png");
+    
   }
 
   create() {
@@ -42,10 +47,27 @@ class room3 extends Phaser.Scene {
 
   
     
-
+// create life
+this.heart1 = this.add.image(50,610, 'heart').setScrollFactor(0).setVisible(false);
+this.heart2 = this.add.image(100,610,'heart').setScrollFactor(0).setVisible(false);
+this.heart3 = this.add.image(150,610,'heart').setScrollFactor(0).setVisible(false);
+  
+if(window.heart == 3){
+this.heart1.setVisible(true);
+this.heart2.setVisible(true);
+this.heart3.setVisible(true);
+}else if (window.heart == 2){
+this.heart1.setVisible(true);
+this.heart2.setVisible(true);
+}else if (window.heart == 1){
+this.heart1.setVisible(true);
+}
   
 
-    // Add main player here with physics.add.sprite
+    // score
+    var score = 0;
+    var scoreText;
+    scoreText = this.add.text(100, 100, 'treasure: 0', { fontSize: '18px', fill: '#FFFFFF' }).setScrollFactor(0);
 
     // collect item
 this.diamond = this.physics.add.sprite(404,392, 'diamond').play("diamond").setScale(1);
@@ -57,7 +79,66 @@ this.picture1 = this.physics.add.sprite(647,541, 'picture').play("picture").setS
   this.physics.world.bounds.width = this.floorLayer.width;
   this.physics.world.bounds.height = this.floorLayer.height;
 
-  this.player = this.physics.add.sprite(417,159,"thief-front")
+  //player
+  this.player = this.physics.add.sprite(417,159,"thief-front").setSize(12,32)
+
+//Audio
+  this.collect1Snd = this.sound.add('collect');
+  this.collect2Snd = this.sound.add('collect');
+  this.collect3Snd = this.sound.add('collect');
+  this.collect4Snd = this.sound.add('collect');
+  this.collect5Snd = this.sound.add('collect');
+
+  this.bangSnd = this.sound.add('bang');
+
+  //load collectitem
+ 
+this.physics.add.overlap(this.player, this.diamond, collectItem, null, this);
+this.physics.add.overlap(this.player, this.necklace, collectItem2, null, this);
+this.physics.add.overlap(this.player, this.money1, collectItem3, null, this);
+this.physics.add.overlap(this.player, this.picture, collectItem4, null, this);
+this.physics.add.overlap(this.player, this.picture1, collectItem5, null, this);
+
+
+function collectItem (player, diamond)
+{
+  this.collect1Snd.play();
+    diamond.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem2 (player, necklace)
+{
+  this.collect2Snd.play();
+  necklace.disableBody(true, true);
+  score += 1;
+  scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem3 (player, money1)
+{
+  this.collect3Snd.play();
+    money1.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem4 (player, picture)
+{
+  this.collect4Snd.play();
+    picture.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
+
+function collectItem5 (player, picture1)
+{
+  this.collect5Snd.play();
+    picture1.disableBody(true, true);
+    score += 1;
+    scoreText.setText('Treasure: ' + score);
+}
 
   //enemy
   this.Guardfront = this.physics.add.sprite(325,319,"Guardfront").play("Guardfront")
@@ -146,7 +227,7 @@ this.time.addEvent({
       this.player.y > 133 &&
       this.player.y < 166
     ) {
-      this.world();
+      this.winscence();
     }
 
 
@@ -169,17 +250,37 @@ this.time.addEvent({
       this.player.anims.stop();
       this.player.body.setVelocity(0, 0);
     }
-  }  /////////////////// end of update //////////////////////////////
+  }
+  
+  
+  
+  
+  /////////////////// end of update //////////////////////////////
 
   GuardfrontOverlap() {
     console.log( "Guardfront overlap player");
     this.scene.start("gameover");
+    this.bangSnd.play();
+    console.log("deduct life")
+    this.cameras.main.shake(100);
+    this.bangSnd.play();
+    window.heart--;
+
+    if (window.heart == 2) {
+      this.heart3.setVisible(false);
+    }else if (window.heart == 1) {
+      this.heart2.setVisible(false);
+    }else if (window.heart == 0){
+      this.heart1.setVisible(false);
+    console.log("you are dead");
+    this.scene.start("gameover");
+    }
   }
 
   // Function to jump to world
-  world(player, tile) {
-    console.log("world function");
-    this.scene.start("world");
+  winscence(player, tile) {
+    console.log("winscence function");
+    this.scene.start("winscence");
   
   }
 } //////////// end of class world ////////////////////////

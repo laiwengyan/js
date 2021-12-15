@@ -16,7 +16,8 @@
     // },
     backgroundColor: '#000000',
     pixelArt: true,
-    scene: [preload,world,room1,room2,room3,gameover]
+    scene: [preload,storyline,character,gameplay,,rules,world,listroom1,room1,listroom2,room2,listroom3,room3,gameover,winscence]
 };
 
 var game = new Phaser.Game(config);
+window.heart=3;
